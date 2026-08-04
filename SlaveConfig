@@ -5,3 +5,4 @@ echo '/var/tmp_disk /tmp none bind 0 0' | sudo tee -a /etc/fstab
 sudo systemctl mask tmp.mount
 df -h /tmp
 sudo yum install java-21-amazon-corretto -y
+sudo yum install git -y
