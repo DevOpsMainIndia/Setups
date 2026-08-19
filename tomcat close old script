@@ -1,64 +1,50 @@
 sudo -i
-
+set -e
+hostnamectl set-hostname "devenv"
 yum install java-21-amazon-corretto -y
-
-wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.120/bin/apache-tomcat-9.0.120.tar.gz
-
-tar -zxvf apache-tomcat-9.0.120.tar.gz
-
-sed -i '56  a\<role rolename="manager-gui"/>' apache-tomcat-9.0.120/conf/tomcat-users.xml
-
-sed -i '57  a\<role rolename="manager-script"/>' apache-tomcat-9.0.120/conf/tomcat-users.xml
-
-sed -i '58  a\<user username="tomcat" password="admin@123" roles="manager-gui,manager-script"/>' apache-tomcat-9.0.120/conf/tomcat-users.xml
-
-sed -i '59  a\</tomcat-users>' apache-tomcat-9.0.120/conf/tomcat-users.xml
-
-sed -i '56d' apache-tomcat-9.0.120/conf/tomcat-users.xml
-
-sed -i '21d' apache-tomcat-9.0.120/webapps/manager/META-INF/context.xml
-
-sed -i '22d' apache-tomcat-9.0.120/webapps/manager/META-INF/context.xml
-
-sh apache-tomcat-9.0.120/bin/startup.sh
+TOMCAT_VERSION=9.0.120
+wget "https://dlcdn.apache.org/tomcat/tomcat-9/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz"
+tar -zxvf "apache-tomcat-${TOMCAT_VERSION}.tar.gz"
+cd "apache-tomcat-${TOMCAT_VERSION}"
+cat > conf/tomcat-users.xml <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<tomcat-users xmlns="http://tomcat.apache.org/xml"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+              version="1.0">
+    <role rolename="manager-gui"/>
+    <role rolename="manager-script"/>
+    <user username="tomcat" password="admin@123" roles="manager-gui,manager-script"/>
+</tomcat-users>
+EOF
+sed -i '/RemoteCIDRValve/,+1d' webapps/manager/META-INF/context.xml
+sh bin/startup.sh
 
 yum install git -y
+===============================================================================================================================
+Run these four commands one at a time:
 
-----------------------------------------------------------------------------------------------------------------------------------
-Before opening the browser, I recommend these three checks:
-
-cat conf/tomcat-users.xml | tail -10
-
-You should see:
-
-<role rolename="manager-gui"/>
-<role rolename="manager-script"/>
-<user username="tomcat" password="admin@123" roles="manager-gui,manager-script"/>
-</tomcat-users>
-
-Then:
-
-grep -n "RemoteCIDRValve" webapps/manager/META-INF/context.xml
-
-It should return nothing.
-
-Then:
-
+ls -ld /root/apache-tomcat-9.0.120
+cat /root/apache-tomcat-9.0.120/conf/tomcat-users.xml
 ss -lntp | grep 8080
+curl -I http://localhost:8080
 
-You should see Tomcat listening on:
+If everything is correct:
 
-:8080
+First command → Tomcat directory exists
+Second → shows manager-gui, manager-script, and tomcat
+Third → shows :8080 listening
+Fourth → should return an HTTP response from Tomcat
 
 Then open:
 
 http://YOUR-EC2-PUBLIC-IP:8080
 
-and Manager:
+and:
 
 http://YOUR-EC2-PUBLIC-IP:8080/manager/html
 
-Credentials:
+Login:
 
 Username: tomcat
 Password: admin@123
