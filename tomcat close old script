@@ -23,3 +23,42 @@ sed -i '22d' apache-tomcat-9.0.120/webapps/manager/META-INF/context.xml
 sh apache-tomcat-9.0.120/bin/startup.sh
 
 yum install git -y
+
+----------------------------------------------------------------------------------------------------------------------------------
+Before opening the browser, I recommend these three checks:
+
+cat conf/tomcat-users.xml | tail -10
+
+You should see:
+
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<user username="tomcat" password="admin@123" roles="manager-gui,manager-script"/>
+</tomcat-users>
+
+Then:
+
+grep -n "RemoteCIDRValve" webapps/manager/META-INF/context.xml
+
+It should return nothing.
+
+Then:
+
+ss -lntp | grep 8080
+
+You should see Tomcat listening on:
+
+:8080
+
+Then open:
+
+http://YOUR-EC2-PUBLIC-IP:8080
+
+and Manager:
+
+http://YOUR-EC2-PUBLIC-IP:8080/manager/html
+
+Credentials:
+
+Username: tomcat
+Password: admin@123
