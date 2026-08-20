@@ -43,6 +43,35 @@ http://YOUR-EC2-PUBLIC-IP:8080
 and:
 
 http://YOUR-EC2-PUBLIC-IP:8080/manager/html
+=================================================================================================================================
+On the EC2 where you are trying to log in, run these exact commands:
+
+cd /root/apache-tomcat-9.0.120
+
+Then:
+
+grep -A5 -B2 '<user username' conf/tomcat-users.xml
+
+You should see:
+
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<user username="tomcat" password="admin@123" roles="manager-gui,manager-script"/>
+
+Then check the Manager restriction:
+
+grep -n "RemoteCIDRValve\|RemoteAddrValve" webapps/manager/META-INF/context.xml
+
+Then check whether this exact Tomcat is running:
+
+ps -ef | grep '[o]rg.apache.catalina.startup.Bootstrap'
+Most important test
+
+From the same EC2, run:
+
+curl -u 'tomcat:admin@123' http://localhost:8080/manager/html/
+
+If authentication is correct, you should get HTML output rather than an HTTP 401.
 
 Login:
 
