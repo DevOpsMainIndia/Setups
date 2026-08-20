@@ -1,0 +1,10 @@
+stage("CQA") {
+    steps {
+        sh '''
+            mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=newproject \
+            -Dsonar.host.url=http://98.94.49.105:9000 \
+            -Dsonar.login=7e093a1368029342be9753da76611b9cd69ffd5b
+        '''
+    }
+}
