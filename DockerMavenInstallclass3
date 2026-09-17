@@ -1,0 +1,49 @@
+maven installation script
+#!/bin/bash
+
+# ==========================================
+# Java 17 + Maven 3.9.11 Installation
+# Amazon Linux 2023
+# ==========================================
+
+set -e
+
+# Install Java 17 Amazon Corretto
+sudo yum install java-17-amazon-corretto -y
+
+# Verify Java
+java -version
+
+# Go to /opt
+cd /opt
+
+# Maven version required for the course
+MAVEN_VERSION=3.9.11
+MAVEN_DIR=/opt/maven
+MAVEN_TAR=apache-maven-${MAVEN_VERSION}-bin.tar.gz
+MAVEN_URL=https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/${MAVEN_TAR}
+
+# Download Maven 3.9.11
+wget ${MAVEN_URL}
+
+# Extract Maven
+tar -xzf ${MAVEN_TAR}
+
+# Remove old Maven installation if it exists
+sudo rm -rf ${MAVEN_DIR}
+
+# Rename Maven directory
+sudo mv apache-maven-${MAVEN_VERSION} ${MAVEN_DIR}
+
+# Create Maven environment variables
+echo 'export M2_HOME=/opt/maven' | sudo tee /etc/profile.d/maven.sh
+echo 'export PATH=${M2_HOME}/bin:${PATH}' | sudo tee -a /etc/profile.d/maven.sh
+
+# Make the profile script executable
+sudo chmod +x /etc/profile.d/maven.sh
+
+# Load Maven environment variables
+source /etc/profile.d/maven.sh
+
+# Verify Maven
+mvn -version
