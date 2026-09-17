@@ -1,4 +1,4 @@
-maven installation script
+```bash
 #!/bin/bash
 
 # ==========================================
