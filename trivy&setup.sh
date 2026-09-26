@@ -19,6 +19,9 @@ df -h /var/trivy-tmp
 
 echo "Trivy version:"
 trivy --version
+
+====copy code by vim doc.sh, after sh doc.sh 
 ===================================================================================================================
-==scanning image
-TMPDIR=/var/trivy-tmp trivy image image:v1
+==scanning image, here image:v1 is the image which you want to scan
+TMPDIR=/var/trivy-tmp trivy image image:v1 | tee trivy-report.txt
+head -n 50 trivy-report.txt
