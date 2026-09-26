@@ -25,3 +25,8 @@ trivy --version
 ==scanning image, here image:v1 is the image which you want to scan
 TMPDIR=/var/trivy-tmp trivy image image:v1 | tee trivy-report.txt
 head -n 50 trivy-report.txt
+less trivy-report.txt
+===========================================================================================================0r=======
+TMPDIR=/var/trivy-tmp trivy image image:v1 | tee trivy-report.txt
+grep "Total:" trivy-report.txt
+less trivy-report.txt
