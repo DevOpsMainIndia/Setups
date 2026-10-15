@@ -83,3 +83,7 @@ echo "Docker daemon is accessible."
 
 echo
 echo "========== INSTALLATION COMPLETE =========="
+
+==========================================================================================================================================
+copy this by vim dockercompose.sh
+execute by sudo bash dockercompose.sh
